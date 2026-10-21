@@ -25,6 +25,7 @@ jobs:
           xcrun simctl spawn $UDID launchctl list | grep -i mossloop && echo "SIM_ALIVE" || echo "SIM_NOT_RUNNING"
           xcrun simctl spawn $UDID log show --last 2m --predicate 'process == "App"' --style compact 2>/dev/null | grep -iE "fatal|crash|exception|error|capacitor|⚡" | head -60 || true
           echo '--- console'; grep -v '^\s*$' sim/console.txt | head -80 || true
+          if ! grep -q 'BOOT_REPORT {"text":[1-9]' sim/console.txt; then echo "::error::app UI did not render"; exit 1; fi
           if grep -q "STARTUP JS ERROR" sim/console.txt; then echo "::error::JS startup error in simulator"; exit 1; fi
           grep -q "SIM_ALIVE" <(xcrun simctl spawn $UDID launchctl list | grep -i mossloop && echo SIM_ALIVE) || { echo "::error::app not running"; exit 1; }
           ls ~/Library/Logs/DiagnosticReports/ 2>/dev/null | grep -i App && cat ~/Library/Logs/DiagnosticReports/App*.ips 2>/dev/null | head -120 || true
