@@ -2,7 +2,7 @@
 <radialGradient id="hl" cx=".3" cy=".2" r=".9"><stop offset="0" stop-color="#fff" stop-opacity=".16"/><stop offset=".6" stop-color="#fff" stop-opacity="0"/></radialGradient>
 <linearGradient id="moss" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b5dc8e"/><stop offset="1" stop-color="#6fae5f"/></linearGradient>
 <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f7e3a3"/><stop offset="1" stop-color="#e0a84f"/></linearGradient>
-<filter id="sh"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#06180f" flood-opacity=".45"/></filter></defs>
-<rect width="512" height="512" rx="114" fill="url(#bg)"/><rect width="512" height="512" rx="114" fill="url(#hl)"/><g filter="url(#sh)" fill="none" stroke-linecap="round" stroke-linejoin="round">
-<path d="M256 410 C 256 330 256 300 256 268 C 256 190 150 170 150 250 C 150 320 256 320 300 250 C 340 186 400 150 410 110 C 340 112 280 150 256 268" stroke="url(#moss)" stroke-width="44"/>
-<path d="M410 110 C 340 112 290 150 268 230" stroke="url(#gold)" stroke-width="14"/></g></svg>
+<filter id="sh"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#06180f" flood-opacity=".45"/></filter></defs><rect width="512" height="512" rx="114" fill="url(#bg)"/><rect width="512" height="512" rx="114" fill="url(#hl)"/><g filter="url(#sh)"><path d="M354.1 179.7 A128 128 0 1 1 208.1 143.3" fill="none" stroke="url(#moss)" stroke-width="62" stroke-linecap="round"/>
+<g fill="url(#moss)"><circle cx="354.1" cy="179.7" r="31"/><circle cx="379.0" cy="226.7" r="31"/><circle cx="382.8" cy="279.8" r="31"/><circle cx="364.6" cy="329.8" r="31"/><circle cx="327.6" cy="368.1" r="31"/><circle cx="278.2" cy="388.1" r="31"/><circle cx="225.0" cy="386.2" r="31"/><circle cx="177.2" cy="362.9" r="31"/><circle cx="143.0" cy="322.1" r="31"/><circle cx="128.3" cy="270.9" r="31"/><circle cx="135.7" cy="218.2" r="31"/><circle cx="163.9" cy="173.1" r="31"/><circle cx="208.1" cy="143.3" r="31"/></g>
+<g transform="translate(220.7 139.0) rotate(344)"><path d="M-18 -48 L 64 0 L -18 48 Z" fill="url(#gold)" stroke="url(#gold)" stroke-width="20" stroke-linejoin="round"/></g>
+<circle cx="256" cy="262" r="34" fill="url(#gold)"/></g></svg>
