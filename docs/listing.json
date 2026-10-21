@@ -1,0 +1,25 @@
+{
+"en-US": {
+ "name": "Mossloop",
+ "subtitle": "Home upkeep, people & things",
+ "promotionalText": "Life's quiet upkeep slips by. Mossloop brings back what matters before it becomes a problem. No account, no ads, no tracking, and a one-time Pro.",
+ "keywords": "home maintenance,upkeep,reminders,chores,car,oil change,AC filter,checklist,routine,friends,house",
+ "description": "Why we made Mossloop\nLife's quiet upkeep slips by: the AC filter, the oil change, the friend you meant to call, the jacket you forgot you own. Reminder apps only remind you of what you already typed in, and juggling three or four apps didn't work for us. So we made one calm, private place that brings back what matters before it becomes a problem.\n\nNo account. No ads. No tracking. And a one-time Pro instead of a subscription.\n\nWHAT IT DOES\n• Rediscover: each day, up to 3 things worth a moment, with Done, Snooze or Not now.\n• Upkeep: repeat every few days, weeks or months, add a mileage note, and see when you last did it.\n• People: check-in reminders with one tap to WhatsApp, call or SMS.\n• Things: add a photo of something you own and have it shown to you again every N days.\n• 44 ready-made templates: AC filter, AC service before summer, water tank, oil change, tyre pressure, smoke alarm battery, car registration and insurance renewals, calling your parents and more.\n• Overdue view in red, amber and green.\n• Daily reminder notification, home-screen widget and dark mode.\n• English and Arabic, with full right-to-left layout.\n• Backup to a file you keep, and restore it any time.\n\nPRIVATE BY DESIGN\nEverything you add stays on your iPhone. There is no sign-up, no server and no analytics.\n\nFREE AND PRO\nThe free version holds up to 30 items. Mossloop Pro is a one-time purchase that unlocks unlimited items, widget themes and photos in backups.",
+ "supportUrl": "https://barood-labs.github.io/mossloop/support.html",
+ "marketingUrl": "https://barood-labs.github.io/mossloop/",
+ "privacyPolicyUrl": "https://barood-labs.github.io/mossloop/privacy.html"
+},
+"ar-SA": {
+ "name": "Mossloop",
+ "subtitle": "صيانة المنزل والناس والأغراض",
+ "promotionalText": "تفاصيل الحياة الصغيرة تُنسى. Mossloop يعيد إليك ما يهم قبل أن يصبح مشكلة. بلا حساب ولا إعلانات ولا تتبع، وPro بدفعة واحدة.",
+ "keywords": "صيانة المنزل,تذكير,مهام,سيارة,تغيير الزيت,فلتر المكيف,قائمة,روتين,أصدقاء,البيت,منظم",
+ "description": "لماذا صنعنا Mossloop\nتفاصيل الحياة الصغيرة تفلت منّا بهدوء: فلتر المكيّف، تغيير الزيت، الصديق الذي نويت الاتصال به، الجاكيت الذي نسيت أنك تملكه. تطبيقات التذكير لا تذكّرك إلا بما كتبته بنفسك، والتنقل بين ثلاثة أو أربعة تطبيقات لم ينجح معنا. لذلك صنعنا مكانًا واحدًا هادئًا وخاصًا يعيد إليك ما يهم قبل أن يصبح مشكلة.\n\nبلا حساب. بلا إعلانات. بلا تتبع. وPro بدفعة واحدة بدل الاشتراك.\n\nماذا يقدّم\n• تذكير اليوم: حتى ٣ أشياء يوميًا تستحق لحظة، مع: تم، تأجيل، ليس الآن.\n• الصيانة: تكرار كل عدة أيام أو أسابيع أو أشهر، مع ملاحظة لعدّاد الكيلومترات ومعرفة آخر مرة أنجزتها.\n• الأشخاص: تذكير بالسؤال عنهم، مع واتساب أو اتصال أو رسالة بلمسة واحدة.\n• الأغراض: أضف صورة لشيء تملكه ليظهر لك من جديد كل عدد من الأيام.\n• ٤٤ قالبًا جاهزًا: فلتر المكيّف، صيانة المكيّف قبل الصيف، خزان الماء، تغيير الزيت، ضغط الإطارات، بطارية كاشف الدخان، تجديد استمارة السيارة وتأمينها، الاتصال بالوالدين وغيرها.\n• عرض للمتأخر بالأحمر والكهرماني والأخضر.\n• تذكير يومي، وودجت للشاشة الرئيسية، ووضع داكن.\n• العربية والإنجليزية مع اتجاه كامل من اليمين لليسار.\n• نسخة احتياطية في ملف تحتفظ به أنت، واستعادتها متى شئت.\n\nخصوصية في التصميم\nكل ما تضيفه يبقى على جهازك. لا تسجيل ولا خوادم ولا تحليلات.\n\nمجاني وPro\nالنسخة المجانية تتسع لـ ٣٠ عنصرًا. Mossloop Pro شراء لمرة واحدة يفتح عناصر بلا حدود ومظاهر للودجت وحفظ الصور في النسخ الاحتياطية.",
+ "supportUrl": "https://barood-labs.github.io/mossloop/support.html",
+ "marketingUrl": "https://barood-labs.github.io/mossloop/",
+ "privacyPolicyUrl": "https://barood-labs.github.io/mossloop/privacy.html"
+},
+"reviewNotes": "Mossloop works fully offline with no account or login. To test: open the app, tap Browse templates (or the Add tab), add a few templates, then go to Today to see the Rediscover card (Done / Snooze / Not now). People items show WhatsApp/Call/SMS links that open the system apps. Pro (com.baroodlabs.mossloop.pro, one-time non-consumable) is offered in Settings > Pro and only appears when the product loads from the App Store; Restore Purchase is on the same card. The free version allows 30 items. No data is collected; everything is stored on the device.",
+"category": ["PRODUCTIVITY", "LIFESTYLE"],
+"copyright": "2026 Barood Labs"
+}
