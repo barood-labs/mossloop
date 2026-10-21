@@ -1,0 +1,31 @@
+name: iOS simulator launch check
+on: { workflow_dispatch: {} }
+jobs:
+  sim:
+    runs-on: macos-26
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - run: X=$(ls -d /Applications/Xcode_26*.app | sort -V | tail -1); sudo xcode-select -s "$X"
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm ci && npm run build && npx cap sync ios && sed -i '' 's/\.iOS(\.v14)/.iOS(.v15)/' ios/App/CapApp-SPM/Package.swift
+      - run: gem install xcodeproj --user-install --no-document >/dev/null && ruby ios/App/scripts/add_native.rb
+        env: { APP_PROFILE: x, WIDGET_PROFILE: y }
+      - name: Simulator launch check (screenshot + crash logs)
+        run: |
+          xcodebuild -project ios/App/App.xcodeproj -scheme App -configuration Debug -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' -derivedDataPath $RUNNER_TEMP/sim CODE_SIGNING_ALLOWED=NO build 2>&1 | grep -E "error:|BUILD" || true
+          APP=$(ls -d $RUNNER_TEMP/sim/Build/Products/Debug-iphonesimulator/App.app)
+          UDID=$(xcrun simctl list devices available -j | python3 -c "import json,sys;d=json.load(sys.stdin)['devices'];print([x['udid'] for k,v in d.items() if 'iOS' in k for x in v if 'iPhone' in x['name']][-1])")
+          mkdir -p sim; xcrun simctl boot $UDID; xcrun simctl bootstatus $UDID -b >/dev/null
+          xcrun simctl install $UDID "$APP"; ( xcrun simctl launch --console-pty $UDID com.baroodlabs.mossloop > sim/console.txt 2>&1 & ); sleep 40
+          xcrun simctl io $UDID screenshot sim/launch.png
+          xcrun simctl spawn $UDID launchctl list | grep -i mossloop && echo "SIM_ALIVE" || echo "SIM_NOT_RUNNING"
+          xcrun simctl spawn $UDID log show --last 2m --predicate 'process == "App"' --style compact 2>/dev/null | grep -iE "fatal|crash|exception|error|capacitor|⚡" | head -60 || true
+          echo '--- console'; grep -v '^\s*$' sim/console.txt | head -80 || true
+          if grep -q "STARTUP JS ERROR" sim/console.txt; then echo "::error::JS startup error in simulator"; exit 1; fi
+          grep -q "SIM_ALIVE" <(xcrun simctl spawn $UDID launchctl list | grep -i mossloop && echo SIM_ALIVE) || { echo "::error::app not running"; exit 1; }
+          ls ~/Library/Logs/DiagnosticReports/ 2>/dev/null | grep -i App && cat ~/Library/Logs/DiagnosticReports/App*.ips 2>/dev/null | head -120 || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: sim-launch, path: sim/, retention-days: 14 }

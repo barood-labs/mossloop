@@ -1,0 +1,83 @@
+name: iOS build → TestFlight
+on: { workflow_dispatch: { inputs: { upload: { description: 'Upload to TestFlight', type: boolean, default: true } } } }
+env: { APP_PROFILE: "Mossloop App Store mvhqlrob", WIDGET_PROFILE: "Mossloop Widget App Store mvhqls4j" }
+jobs:
+  ios:
+    runs-on: macos-26
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select newest Xcode (iOS 26 SDK required)
+        run: X=$(ls -d /Applications/Xcode_26*.app | sort -V | tail -1); sudo xcode-select -s "$X"; xcodebuild -version
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm ci && npm run build && npx cap sync ios && sed -i '' 's/\.iOS(\.v14)/.iOS(.v15)/' ios/App/CapApp-SPM/Package.swift
+      - name: Wire local plugins + widget extension
+        run: gem install xcodeproj --user-install --no-document >/dev/null && ruby -e 'Gem.paths' && ruby ios/App/scripts/add_native.rb
+      - name: Simulator launch check (screenshot + crash logs)
+        run: |
+          xcodebuild -project ios/App/App.xcodeproj -scheme App -configuration Debug -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' -derivedDataPath $RUNNER_TEMP/sim CODE_SIGNING_ALLOWED=NO build 2>&1 | grep -E "error:|BUILD" || true
+          APP=$(ls -d $RUNNER_TEMP/sim/Build/Products/Debug-iphonesimulator/App.app)
+          UDID=$(xcrun simctl list devices available -j | python3 -c "import json,sys;d=json.load(sys.stdin)['devices'];print([x['udid'] for k,v in d.items() if 'iOS' in k for x in v if 'iPhone' in x['name']][-1])")
+          mkdir -p sim; xcrun simctl boot $UDID; xcrun simctl bootstatus $UDID -b >/dev/null
+          xcrun simctl install $UDID "$APP"; ( xcrun simctl launch --console-pty $UDID com.baroodlabs.mossloop > sim/console.txt 2>&1 & ); sleep 40
+          xcrun simctl io $UDID screenshot sim/launch.png
+          xcrun simctl spawn $UDID launchctl list | grep -i mossloop && echo "SIM_ALIVE" || echo "SIM_NOT_RUNNING"
+          xcrun simctl spawn $UDID log show --last 2m --predicate 'process == "App"' --style compact 2>/dev/null | grep -iE "fatal|crash|exception|error|capacitor|⚡" | head -60 || true
+          echo '--- console'; grep -v '^\s*$' sim/console.txt | head -80 || true
+          if grep -q "STARTUP JS ERROR" sim/console.txt; then echo "::error::JS startup error in simulator"; exit 1; fi
+          grep -q "SIM_ALIVE" <(xcrun simctl spawn $UDID launchctl list | grep -i mossloop && echo SIM_ALIVE) || { echo "::error::app not running"; exit 1; }
+          ls ~/Library/Logs/DiagnosticReports/ 2>/dev/null | grep -i App && cat ~/Library/Logs/DiagnosticReports/App*.ips 2>/dev/null | head -120 || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: sim-launch, path: sim/, retention-days: 14 }
+      - name: Install signing + API key (from encrypted secrets; nothing echoed)
+        env: { P12: "${{ secrets.IOS_P12_B64 }}", P12_PASS: "${{ secrets.IOS_P12_PASS }}", KEY: "${{ secrets.ASC_KEY_P8_B64 }}", PROFILE: "${{ secrets.IOS_PROFILE_B64 }}", WPROFILE: "${{ secrets.IOS_WIDGET_PROFILE_B64 }}" }
+        run: |
+          set +x
+          KC=$RUNNER_TEMP/build.keychain-db; KP=$(uuidgen)
+          echo "$P12" | base64 --decode > $RUNNER_TEMP/dist.p12
+          security create-keychain -p "$KP" $KC && security set-keychain-settings -lut 3600 $KC && security unlock-keychain -p "$KP" $KC
+          security import $RUNNER_TEMP/dist.p12 -P "$P12_PASS" -A -t cert -f pkcs12 -k $KC
+          security set-key-partition-list -S apple-tool:,apple: -k "$KP" $KC >/dev/null
+          security list-keychain -d user -s $KC login.keychain-db
+          rm $RUNNER_TEMP/dist.p12
+          echo "$KEY" | base64 --decode > $RUNNER_TEMP/AuthKey.p8
+          PD=~/Library/MobileDevice/Provisioning\ Profiles; mkdir -p "$PD"
+          echo "$PROFILE" | base64 --decode > "$PD/mossloop.mobileprovision"; echo "$WPROFILE" | base64 --decode > "$PD/mossloop-widget.mobileprovision"
+      - name: Archive (manual signing)
+        env: { KID: "${{ secrets.ASC_KEY_ID }}", ISS: "${{ secrets.ASC_ISSUER_ID }}" }
+        run: |
+          xcodebuild -project ios/App/App.xcodeproj -scheme App -configuration Release -destination 'generic/platform=iOS' \
+            -archivePath $RUNNER_TEMP/App.xcarchive \
+            CURRENT_PROJECT_VERSION=${{ github.run_number }} archive 2>&1 | grep -E "error:|warning: .*(sign|profile|entitle)|ARCHIVE" ; test -d $RUNNER_TEMP/App.xcarchive
+      - name: Export IPA
+        env: { KID: "${{ secrets.ASC_KEY_ID }}", ISS: "${{ secrets.ASC_ISSUER_ID }}" }
+        run: |
+          cat > $RUNNER_TEMP/export.plist <<PL
+          <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0"><dict><key>method</key><string>app-store-connect</string><key>teamID</key><string>3S2B5CZC84</string><key>signingStyle</key><string>manual</string><key>provisioningProfiles</key><dict><key>com.baroodlabs.mossloop</key><string>$APP_PROFILE</string><key>com.baroodlabs.mossloop.widget</key><string>$WIDGET_PROFILE</string></dict><key>uploadSymbols</key><true/></dict></plist>
+          PL
+          xcodebuild -exportArchive -archivePath $RUNNER_TEMP/App.xcarchive -exportOptionsPlist $RUNNER_TEMP/export.plist -exportPath $RUNNER_TEMP/out 2>&1 | grep -E "error|EXPORT" 
+          ls -la $RUNNER_TEMP/out
+          unzip -l $RUNNER_TEMP/out/*.ipa | grep -E "appex|\.app/App$" || true
+      - name: Inspect IPA (plist, entitlements, bundle contents; no secrets)
+        run: |
+          cd $RUNNER_TEMP && rm -rf ipa && mkdir ipa && cd ipa && unzip -q ../out/*.ipa && A=Payload/App.app
+          plutil -p $A/Info.plist | grep -E "Usage|MinimumOS|CFBundleIdentifier|DisplayName|Version"
+          echo "--app ent"; codesign -d --entitlements - --xml $A 2>/dev/null | plutil -p - 
+          echo "--profile ent"; security cms -D -i $A/embedded.mobileprovision | plutil -extract Entitlements xml1 -o - - | plutil -p -
+          ls $A/public | head; ls $A | grep -iE "config|plist|appex|Plugins"
+          W=$(ls -d $A/PlugIns/*.appex | head -1); plutil -p $W/Info.plist | grep -E "Identifier|NSExtension|Minimum" ; echo "--widget ent"; codesign -d --entitlements - --xml $W 2>/dev/null | plutil -p -
+      - name: Upload to TestFlight (no review, no release)
+        if: ${{ inputs.upload }}
+        env: { KID: "${{ secrets.ASC_KEY_ID }}", ISS: "${{ secrets.ASC_ISSUER_ID }}" }
+        run: |
+          set +x; mkdir -p ~/.appstoreconnect/private_keys && cp $RUNNER_TEMP/AuthKey.p8 ~/.appstoreconnect/private_keys/AuthKey_$KID.p8
+          xcrun altool --upload-app -f $RUNNER_TEMP/out/*.ipa -t ios --apiKey "$KID" --apiIssuer "$ISS"
+      - uses: actions/upload-artifact@v4
+        with: { name: wired-xcodeproj, path: ios/App/App.xcodeproj/project.pbxproj, retention-days: 7 }
+      - if: always()
+        run: |
+          rm -f $RUNNER_TEMP/AuthKey.p8 ~/.appstoreconnect/private_keys/*.p8
+          security delete-keychain $RUNNER_TEMP/build.keychain-db || true

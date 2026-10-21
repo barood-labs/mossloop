@@ -2,5 +2,14 @@
  "appId": "com.baroodlabs.mossloop",
  "appName": "Mossloop",
  "webDir": "www",
- "plugins": { "LocalNotifications": { "iconColor": "#2f6b4f" } }
+ "plugins": {
+  "LocalNotifications": {
+   "iconColor": "#2f6b4f"
+  }
+ },
+ "backgroundColor": "#123524",
+ "ios": {
+  "contentInset": "never",
+  "backgroundColor": "#123524"
+ }
 }

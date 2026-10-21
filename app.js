@@ -1,4 +1,4 @@
-import { STR } from './i18n.js'; import { TEMPLATES } from './templates.js'; import { ic, ICON_OF, TYPE_ICON, ILLU_EMPTY, ILLU_CLEAR } from './icons.js'; import { PRO_PRODUCT_ID, PRO_PRICE, FREE_LIMIT } from './config.js';
+import { STR } from './i18n.js'; import { TEMPLATES } from './templates.js'; import { ic, ICON_OF, TYPE_ICON, ILLU_EMPTY, ILLU_CLEAR } from './icons.js'; import { isNative, LN as NLN, IAP, widgetSet } from './native.js'; import { PRO_PRODUCT_ID, PRO_PRICE, FREE_LIMIT } from './config.js';
 const $ = s => document.querySelector(s), K = 'rs_data_v1';
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const DAY = 864e5, today = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d.getTime(); }, iso = t => new Date(t).toISOString().slice(0, 10);
@@ -15,10 +15,10 @@ const resize = f => new Promise(res => { const i = new Image(); i.onload = () =>
 // ---------- Pro: only enforced when a real store product loaded ----------
 const P = { available: false, price: PRO_PRICE };
 const isPro = () => !P.available || !!S.settings.pro;
-async function initStore() { const NP = window.Capacitor?.Plugins?.NativePurchases; if (!NP) return;
-  try { const r = await NP.getProduct({ productIdentifier: PRO_PRODUCT_ID, productType: 'inapp' }); if (r?.product) { P.available = true; P.price = r.product.priceString || PRO_PRICE; P.NP = NP; } } catch { P.available = false; } }
-async function buy() { try { await P.NP.purchaseProduct({ productIdentifier: PRO_PRODUCT_ID, productType: 'inapp' }); S.settings.pro = true; save(); toast(t('owned')); render(); } catch {} }
-async function restore() { try { const r = await P.NP.restorePurchases(); if (JSON.stringify(r || '').includes(PRO_PRODUCT_ID)) { S.settings.pro = true; save(); toast(t('owned')); render(); } } catch {} }
+async function initStore() { if (!IAP) return;
+  try { const r = await Promise.race([IAP.getProducts({ productIdentifiers: [PRO_PRODUCT_ID], productType: 'inapp' }), new Promise((_, j) => setTimeout(j, 6000))]); const pr = r?.products?.[0]; if (pr && pr.priceString) { P.available = true; P.price = pr.priceString; P.NP = IAP; } } catch { P.available = false; } }
+async function buy() { try { const r = await P.NP.purchaseProduct({ productIdentifier: PRO_PRODUCT_ID, productType: 'inapp', quantity: 1 }); if (!(r && (r.transactionId || r.productIdentifier))) return; S.settings.pro = true; save(); toast(t('owned')); render(); } catch {} }
+async function restore() { try { await P.NP.restorePurchases(); const r = await P.NP.getPurchases?.({ productType: 'inapp' }); if (r?.purchases?.some(x => x.productIdentifier === PRO_PRODUCT_ID)) { S.settings.pro = true; save(); toast(t('owned')); render(); } } catch {} }
 // ---------- scheduling ----------
 const due = it => (it.last ?? it.created) + it.every * DAY;
 function urg(it) { const d = Math.round((due(it) - today()) / DAY); return { d, c: d < 0 ? 'red' : d <= Math.max(2, Math.round(it.every * .15)) ? 'amb' : 'grn' }; }
@@ -30,12 +30,12 @@ function addItem(o) { if (!isPro() && S.items.length >= FREE_LIMIT) { location.h
   S.items.push({ id: crypto.randomUUID?.() || String(Date.now() + Math.random()), created: today() - (o.type === 'things' ? o.every * DAY : 0), last: null, ...o }); save(); return true; }
 // ---------- notifications & widget ----------
 function syncWidget() { const w = { title: t('rediscover'), items: pick3().map(i => i.title), theme: S.settings.theme || 'leaf' }; localStorage.setItem('rs_widget', JSON.stringify(w));
-  window.Capacitor?.Plugins?.WidgetBridge?.set?.({ json: JSON.stringify(w) }).catch?.(() => {}); }
-async function enableNotif() { const LN = window.Capacitor?.Plugins?.LocalNotifications;
-  if (LN) { const p = await LN.requestPermissions(); if (p.display !== 'granted') return; await LN.schedule({ notifications: [{ id: 1, title: t('rediscover'), body: t('rediscoverSub'), schedule: { on: { hour: 9, minute: 0 }, repeats: true } }] }); }
+  widgetSet(w); }
+async function enableNotif() { const LN = NLN;
+  if (LN) { const p = await LN.requestPermissions(); if (p.display !== 'granted') return; const pend = await LN.getPending(); if (pend.notifications.length) await LN.cancel({ notifications: pend.notifications.map(n => ({ id: n.id })) }); await LN.schedule({ notifications: [{ id: 1, title: t('rediscover'), body: t('rediscoverSub'), schedule: { on: { hour: 9, minute: 0 }, repeats: true } }] }); }
   else if ('Notification' in window) { if (await Notification.requestPermission() !== 'granted') return; } else return toast(t('notifNo'));
   S.settings.notif = true; save(); render(); }
-function webNudge() { if (!S.settings.notif || window.Capacitor || !('Notification' in window) || Notification.permission !== 'granted') return; const d = iso(today()), n = pick3();
+function webNudge() { if (!S.settings.notif || isNative || !('Notification' in window) || Notification.permission !== 'granted') return; const d = iso(today()), n = pick3();
   if (S.settings.nudged === d || !n.length) return; S.settings.nudged = d; save(); navigator.serviceWorker?.ready.then(r => r.showNotification(t('rediscover'), { body: n.map(i => i.title).join(' · '), icon: 'icons/icon-192.png' })).catch(() => {}); }
 // ---------- backup ----------
 async function exportJSON() { const photos = {}; if (isPro()) for (const i of S.items) if (i.photo) photos[i.id] = await pGet(i.id);
@@ -96,5 +96,5 @@ document.addEventListener('submit', async e => { e.preventDefault(); const f = e
   if (file) { await pPut(it.id, await resize(file)); it.photo = true; } save(); toast(t('added')); location.hash = '#/item/' + it.id; render(); });
 document.addEventListener('change', e => { if (e.target.id === 'lang') { S.lang = e.target.value; save(); history.replaceState(null, '', location.pathname + location.hash); render(); } if (e.target.id === 'imp' && e.target.files[0]) importJSON(e.target.files[0]); });
 addEventListener('hashchange', render);
-if ('serviceWorker' in navigator && !window.Capacitor) navigator.serviceWorker.register('sw.js').catch(() => {});
+if ('serviceWorker' in navigator && !isNative) navigator.serviceWorker.register('sw.js').catch(() => {});
 initStore().finally(() => { render(); syncWidget(); webNudge(); });
