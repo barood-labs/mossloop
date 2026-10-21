@@ -1,0 +1,6 @@
+{
+ "appId": "com.baroodlabs.resurface",
+ "appName": "Resurface",
+ "webDir": "www",
+ "plugins": { "LocalNotifications": { "iconColor": "#2f6b4f" } }
+}
