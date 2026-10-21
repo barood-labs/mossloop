@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><title>Mossloop</title><defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2d6a4a"/><stop offset="1" stop-color="#123524"/></linearGradient>
+<radialGradient id="hl" cx=".3" cy=".2" r=".9"><stop offset="0" stop-color="#fff" stop-opacity=".16"/><stop offset=".6" stop-color="#fff" stop-opacity="0"/></radialGradient>
+<linearGradient id="moss" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b5dc8e"/><stop offset="1" stop-color="#6fae5f"/></linearGradient>
+<linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f7e3a3"/><stop offset="1" stop-color="#e0a84f"/></linearGradient>
+<filter id="sh"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#06180f" flood-opacity=".45"/></filter></defs>
+<rect width="512" height="512" rx="114" fill="url(#bg)"/><rect width="512" height="512" rx="114" fill="url(#hl)"/><g filter="url(#sh)"><circle cx="256" cy="262" r="118" fill="none" stroke="#1b4c34" stroke-width="64"/>
+<g fill="url(#moss)"><circle cx="296.4" cy="151.1" r="34"/><circle cx="339.4" cy="178.6" r="34"/><circle cx="366.9" cy="221.6" r="34"/><circle cx="373.6" cy="272.3" r="34"/><circle cx="358.2" cy="321.0" r="34"/><circle cx="323.7" cy="358.7" r="34"/><circle cx="276.5" cy="378.2" r="34"/><circle cx="225.5" cy="376.0" r="34"/><circle cx="180.2" cy="352.4" r="34"/><circle cx="149.1" cy="311.9" r="34"/><circle cx="138.0" cy="262.0" r="34"/><circle cx="149.1" cy="212.1" r="34"/><circle cx="180.2" cy="171.6" r="34"/></g>
+<path d="M300 118 L 372 150 L 312 196 Z" fill="url(#gold)" stroke="url(#gold)" stroke-width="18" stroke-linejoin="round"/>
+<circle cx="256" cy="262" r="30" fill="url(#gold)"/></g></svg>

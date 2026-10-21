@@ -1,0 +1,1 @@
+Fonts: Inter (OFL 1.1, rsms) and IBM Plex Sans Arabic (OFL 1.1, IBM), subset and self-hosted.

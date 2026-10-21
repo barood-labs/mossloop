@@ -1,5 +1,5 @@
 export const STR = {
-en: { brand:'Resurface', tagline:'The things you forget, gently brought back.', today:'Today', all:'All', add:'Add', settings:'Settings',
+en: { brand:'Mossloop', tagline:'The things you forget, gently brought back.', today:'Today', all:'All', add:'Add', settings:'Settings',
  rediscover:'Rediscover', rediscoverSub:'3 things worth a moment today', done:'Done', snooze:'Snooze', notnow:'Not now',
  allClear:'All clear for today', allClearSub:'Nothing is due. Enjoy the calm.', emptyTitle:'Start with a few reminders', emptySub:'Pick from ready-made lists — AC filter, oil change, calling your parents — or add your own.', browse:'Browse templates',
  overdue:'Overdue', soon:'Due soon', ok:'On track', upkeep:'Upkeep', people:'People', things:'Things', any:'Everything',
@@ -8,8 +8,8 @@ en: { brand:'Resurface', tagline:'The things you forget, gently brought back.', 
  whatsapp:'WhatsApp', call:'Call', sms:'SMS', markDone:'Mark done', language:'Language', notif:'Daily reminder', notifOn:'Turn on', notifOnDone:'Reminders on', notifNo:'Not supported in this browser',
  backup:'Backup', export:'Export backup (JSON)', import:'Import backup', imported:'Backup restored', badFile:'That file is not a valid backup',
  privacy:'Privacy', privacyLine:'No account. No tracking. Everything stays on this device.', widgetTheme:'Widget theme', leaf:'Leaf', sand:'Sand', night:'Night', widgetPrev:'Widget preview',
- pro:'Pro', proLine:'Unlimited items, widget themes and photo backup — one-time {p}, no subscription.', buy:'Get Pro', limit:'Free plan holds {n} items. Get Pro for unlimited.', owned:'Pro unlocked — thank you!', restore:'Restore purchase', confirmDel:'Delete this item?', items:'{n} items', upnext:'Up next' },
-ar: { brand:'Resurface', tagline:'الأشياء التي تنساها، تعود إليك بلطف.', today:'اليوم', all:'الكل', add:'إضافة', settings:'الإعدادات',
+ pro:'Pro', proLine:'Unlimited items, widget themes and photo backup — one-time {p}, no subscription.', buy:'Get Pro', limit:'Free plan holds {n} items. Get Pro for unlimited.', owned:'Pro unlocked — thank you!', restore:'Restore purchase', confirmDel:'Delete this item?', items:'{n} items', upnext:'Up next', appearance:'Appearance', system:'Auto', light:'Light', dark:'Dark' },
+ar: { brand:'Mossloop', tagline:'الأشياء التي تنساها، تعود إليك بلطف.', today:'اليوم', all:'الكل', add:'إضافة', settings:'الإعدادات',
  rediscover:'تذكير اليوم', rediscoverSub:'٣ أشياء تستحق لحظة اليوم', done:'تم', snooze:'تأجيل', notnow:'ليس الآن',
  allClear:'لا شيء لليوم', allClearSub:'لا يوجد شيء مستحق. استمتع بالهدوء.', emptyTitle:'ابدأ ببعض التذكيرات', emptySub:'اختر من قوائم جاهزة — فلتر المكيّف، تغيير الزيت، الاتصال بالوالدين — أو أضف ما تريد.', browse:'تصفح القوالب',
  overdue:'متأخر', soon:'قريبًا', ok:'في الموعد', upkeep:'صيانة', people:'أشخاص', things:'أغراض', any:'الكل',
@@ -18,4 +18,4 @@ ar: { brand:'Resurface', tagline:'الأشياء التي تنساها، تعو�
  whatsapp:'واتساب', call:'اتصال', sms:'رسالة', markDone:'تم الإنجاز', language:'اللغة', notif:'تذكير يومي', notifOn:'تفعيل', notifOnDone:'التذكيرات مفعّلة', notifNo:'غير مدعوم في هذا المتصفح',
  backup:'النسخ الاحتياطي', export:'تصدير نسخة (JSON)', import:'استيراد نسخة', imported:'تمت استعادة النسخة', badFile:'هذا الملف ليس نسخة صالحة',
  privacy:'الخصوصية', privacyLine:'بلا حساب. بلا تتبع. كل شيء يبقى على جهازك.', widgetTheme:'مظهر الودجت', leaf:'ورقة', sand:'رمل', night:'ليل', widgetPrev:'معاينة الودجت',
- pro:'Pro', proLine:'عناصر بلا حدود ومظاهر للودجت ونسخ الصور — دفعة واحدة {p} بلا اشتراك.', buy:'احصل على Pro', limit:'الخطة المجانية تتسع لـ {n} عنصرًا. احصل على Pro لعدد غير محدود.', owned:'تم تفعيل Pro — شكرًا لك!', restore:'استعادة الشراء', confirmDel:'حذف هذا العنصر؟', items:'{n} عنصر', upnext:'التالي' } };
+ pro:'Pro', proLine:'عناصر بلا حدود ومظاهر للودجت ونسخ الصور — دفعة واحدة {p} بلا اشتراك.', buy:'احصل على Pro', limit:'الخطة المجانية تتسع لـ {n} عنصرًا. احصل على Pro لعدد غير محدود.', owned:'تم تفعيل Pro — شكرًا لك!', restore:'استعادة الشراء', confirmDel:'حذف هذا العنصر؟', items:'{n} عنصر', upnext:'التالي', appearance:'المظهر', system:'تلقائي', light:'فاتح', dark:'داكن' } };

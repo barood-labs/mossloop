@@ -1,6 +1,6 @@
 {
- "appId": "com.baroodlabs.resurface",
- "appName": "Resurface",
+ "appId": "com.baroodlabs.mossloop",
+ "appName": "Mossloop",
  "webDir": "www",
  "plugins": { "LocalNotifications": { "iconColor": "#2f6b4f" } }
 }
