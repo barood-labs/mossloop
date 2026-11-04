@@ -47,6 +47,12 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Mossloop uses the camera only when you choose Take Photo, to attach a picture to an item. Photos stay on your device.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Mossloop opens your photo library only when you choose a photo to attach to an item. Photos stay on your device.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Mossloop does not save to your library; this is only shown if iOS asks while you pick a photo.</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>CFBundleLocalizations</key>

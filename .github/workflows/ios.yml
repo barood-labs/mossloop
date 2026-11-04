@@ -66,6 +66,7 @@ jobs:
         run: |
           cd $RUNNER_TEMP && rm -rf ipa && mkdir ipa && cd ipa && unzip -q ../out/*.ipa && A=Payload/App.app
           plutil -p $A/Info.plist | grep -E "Usage|MinimumOS|CFBundleIdentifier|DisplayName|Version"
+          for k in NSCameraUsageDescription NSPhotoLibraryUsageDescription; do plutil -extract $k raw $A/Info.plist >/dev/null || { echo "::error::$k missing (photo picker Take Photo would crash)"; exit 1; }; done
           echo "--app ent"; codesign -d --entitlements - --xml $A 2>/dev/null | plutil -p - 
           echo "--profile ent"; security cms -D -i $A/embedded.mobileprovision | plutil -extract Entitlements xml1 -o - - | plutil -p -
           ls $A/public | head; ls $A | grep -iE "config|plist|appex|Plugins"

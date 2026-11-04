@@ -11,7 +11,10 @@ function save() { localStorage.setItem(K, JSON.stringify(S)); syncWidget(); }
 const idb = () => new Promise((res, rej) => { const r = indexedDB.open('rs_photos', 1); r.onupgradeneeded = () => r.result.createObjectStore('p'); r.onsuccess = () => res(r.result); r.onerror = rej; });
 const pPut = async (k, v) => { const d = await idb(); return new Promise(r => { const x = d.transaction('p', 'readwrite'); v == null ? x.objectStore('p').delete(k) : x.objectStore('p').put(v, k); x.oncomplete = r; }); };
 const pGet = async k => { const d = await idb(); return new Promise(r => { const g = d.transaction('p').objectStore('p').get(k); g.onsuccess = () => r(g.result); g.onerror = () => r(null); }); };
-const resize = f => new Promise(res => { const i = new Image(); i.onload = () => { const s = Math.min(1, 640 / Math.max(i.width, i.height)), c = document.createElement('canvas'); c.width = i.width * s; c.height = i.height * s; c.getContext('2d').drawImage(i, 0, 0, c.width, c.height); URL.revokeObjectURL(i.src); res(c.toDataURL('image/jpeg', .8)); }; i.src = URL.createObjectURL(f); });
+// Never hang or throw on an unreadable picture (e.g. a camera capture the WebView cannot decode): reject, and the caller saves the item without it.
+const resize = f => new Promise((res, rej) => { if (!f || (f.type && !f.type.startsWith('image/'))) return rej(new Error('not an image')); const i = new Image(), u = URL.createObjectURL(f), done = () => URL.revokeObjectURL(u), to = setTimeout(() => { done(); rej(new Error('image timeout')); }, 15000);
+  i.onerror = () => { clearTimeout(to); done(); rej(new Error('image decode failed')); };
+  i.onload = () => { clearTimeout(to); try { const s = Math.min(1, 640 / Math.max(i.width, i.height) || 1), c = document.createElement('canvas'); c.width = Math.max(1, Math.round(i.width * s)); c.height = Math.max(1, Math.round(i.height * s)); c.getContext('2d').drawImage(i, 0, 0, c.width, c.height); res(c.toDataURL('image/jpeg', .8)); } catch (e) { rej(e); } finally { done(); } }; i.src = u; });
 // ---------- Pro: only enforced when a real store product loaded ----------
 const P = { available: false, price: PRO_PRICE };
 const isPro = () => !P.available || !!S.settings.pro;
@@ -91,9 +94,9 @@ document.addEventListener('click', e => { const b = e.target.closest('button,[da
   ({ mdone: () => act(id, 'done'), del: () => { if (confirm(t('confirmDel'))) { S.items = S.items.filter(i => i.id !== id); pPut(id, null); save(); location.hash = '#/all'; } },
      notif: enableNotif, exp: exportJSON, buy, restore })[b.id]?.(); });
 document.addEventListener('submit', async e => { e.preventDefault(); const f = e.target, o = { title: $('#ft').value.trim(), type: $('#fy').value, every: Math.max(1, Math.min(3650, +$('#fe').value || 30)), note: $('#fn').value.trim(), phone: $('#fp').value.trim() };
-  if (!o.title) return; const file = $('#fph').files[0]; let it = S.items.find(i => i.id === f.dataset.id);
+  if (!o.title) return; const file = $('#fph')?.files?.[0]; let it = S.items.find(i => i.id === f.dataset.id);
   if (it) Object.assign(it, o); else { if (!addItem(o)) return; it = S.items.at(-1); }
-  if (file) { await pPut(it.id, await resize(file)); it.photo = true; } save(); toast(t('added')); location.hash = '#/item/' + it.id; render(); });
+  let photoOk = true; if (file) { try { await pPut(it.id, await resize(file)); it.photo = true; } catch (err) { console.warn('photo', err); photoOk = false; } } save(); toast(t(photoOk ? 'added' : 'photoErr')); location.hash = '#/item/' + it.id; render(); });
 document.addEventListener('change', e => { if (e.target.id === 'lang') { S.lang = e.target.value; save(); history.replaceState(null, '', location.pathname + location.hash); render(); } if (e.target.id === 'imp' && e.target.files[0]) importJSON(e.target.files[0]); });
 addEventListener('hashchange', render);
 if ('serviceWorker' in navigator && !isNative) navigator.serviceWorker.register('sw.js').catch(() => {});

@@ -6,7 +6,7 @@ en: { brand:'Mossloop', tagline:'The things you forget, gently brought back.', t
  dueIn:'Due in {n} d', dueToday:'Due today', late:'{n} d overdue', lastDone:'Last done', never:'Never', every:'Every', days:'days',
  templates:'Templates', custom:'Custom item', title:'Title', type:'Type', interval:'Repeat every (days)', note:'Note (e.g. mileage)', phone:'Phone number', photo:'Photo', addPhoto:'Add photo', save:'Save', delete:'Delete', cancel:'Cancel', added:'Added', edit:'Edit',
  whatsapp:'WhatsApp', call:'Call', sms:'SMS', markDone:'Mark done', language:'Language', notif:'Daily reminder', notifOn:'Turn on', notifOnDone:'Reminders on', notifNo:'Not supported in this browser',
- backup:'Backup', export:'Export backup (JSON)', import:'Import backup', imported:'Backup restored', badFile:'That file is not a valid backup',
+ backup:'Backup', export:'Export backup (JSON)', import:'Import backup', imported:'Backup restored', badFile:'That file is not a valid backup', photoErr:'Saved — but that photo could not be added. Try another one.',
  privacy:'Privacy', privacyLine:'No account. No tracking. Everything stays on this device.', widgetTheme:'Widget theme', leaf:'Leaf', sand:'Sand', night:'Night', widgetPrev:'Widget preview',
  pro:'Pro', proLine:'Unlimited items, widget themes and photo backup — one-time {p}, no subscription.', buy:'Get Pro', limit:'Free plan holds {n} items. Get Pro for unlimited.', owned:'Pro unlocked — thank you!', restore:'Restore purchase', confirmDel:'Delete this item?', items:'{n} items', upnext:'Up next', appearance:'Appearance', system:'Auto', light:'Light', dark:'Dark' },
 ar: { brand:'Mossloop', tagline:'الأشياء التي تنساها، تعود إليك بلطف.', today:'اليوم', all:'الكل', add:'إضافة', settings:'الإعدادات',
@@ -16,6 +16,6 @@ ar: { brand:'Mossloop', tagline:'الأشياء التي تنساها، تعود
  dueIn:'بعد {n} يوم', dueToday:'مستحق اليوم', late:'متأخر {n} يوم', lastDone:'آخر مرة', never:'أبدًا', every:'كل', days:'يوم',
  templates:'القوالب', custom:'عنصر مخصص', title:'العنوان', type:'النوع', interval:'التكرار كل (أيام)', note:'ملاحظة (مثل عدّاد الكيلومترات)', phone:'رقم الجوال', photo:'صورة', addPhoto:'إضافة صورة', save:'حفظ', delete:'حذف', cancel:'إلغاء', added:'تمت الإضافة', edit:'تعديل',
  whatsapp:'واتساب', call:'اتصال', sms:'رسالة', markDone:'تم الإنجاز', language:'اللغة', notif:'تذكير يومي', notifOn:'تفعيل', notifOnDone:'التذكيرات مفعّلة', notifNo:'غير مدعوم في هذا المتصفح',
- backup:'النسخ الاحتياطي', export:'تصدير نسخة (JSON)', import:'استيراد نسخة', imported:'تمت استعادة النسخة', badFile:'هذا الملف ليس نسخة صالحة',
+ backup:'النسخ الاحتياطي', export:'تصدير نسخة (JSON)', import:'استيراد نسخة', imported:'تمت استعادة النسخة', photoErr:'تم الحفظ، لكن تعذّر إضافة هذه الصورة. جرّب صورة أخرى.', badFile:'هذا الملف ليس نسخة صالحة',
  privacy:'الخصوصية', privacyLine:'بلا حساب. بلا تتبع. كل شيء يبقى على جهازك.', widgetTheme:'مظهر الودجت', leaf:'ورقة', sand:'رمل', night:'ليل', widgetPrev:'معاينة الودجت',
  pro:'Pro', proLine:'عناصر بلا حدود ومظاهر للودجت ونسخ الصور — دفعة واحدة {p} بلا اشتراك.', buy:'احصل على Pro', limit:'الخطة المجانية تتسع لـ {n} عنصرًا. احصل على Pro لعدد غير محدود.', owned:'تم تفعيل Pro — شكرًا لك!', restore:'استعادة الشراء', confirmDel:'حذف هذا العنصر؟', items:'{n} عنصر', upnext:'التالي', appearance:'المظهر', system:'تلقائي', light:'فاتح', dark:'داكن' } };
